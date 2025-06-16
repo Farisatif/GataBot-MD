@@ -464,6 +464,7 @@ const backupCreds = async () => {
     
 
 }}; 
+}};
 
 const restoreCreds = async () => {
 const backups = fs.readdirSync(respaldoDir).filter(file => file.startsWith('creds-') && file.endsWith('.json')).sort((a, b) => fs.statSync(join(respaldoDir, b)).mtimeMs - fs.statSync(join(respaldoDir, a)).mtimeMs);
