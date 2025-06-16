@@ -87,7 +87,7 @@ conn.reply(m.chat,  `*🎟️ 𝙐𝙎𝙏𝙀𝘿 𝘼𝙃𝙊𝙍𝘼 𝙀𝙎
 handler.help = ['addprem [@user] <days>']
 handler.tags = ['owner']
 handler.command = ['addprem', 'userpremium', 'addprem2', 'userpremium2', 'addprem3', 'userpremium3', 'addprem4', 'userpremium4'] 
-handler.group = true
+// handler.group = true
 handler.owner = true
 //handler.botAdmin = true
 export default handler
