@@ -396,75 +396,43 @@ phoneNumber = `+${phoneNumber}`
 } while (!await isValidPhoneNumber(phoneNumber))
 rl.close()
 addNumber = phoneNumber.replace(/\D/g, '')
-const { join } = require('path');
-const fs = require('fs');
-const chalk = require('chalk');
-const os = require('os');
-const cp = require('child_process');
-
-// حماية من تجاوز عدد الـ listeners
-require('events').EventEmitter.defaultMaxListeners = 20;
-
-// تعريف بديل آمن لـ tr إذا مش معرف
-const tr = (text) => text; // تقدر تستبدلها بوحدة الترجمة الحقيقية لو عندك وحدة ترجمة جاهزة
-
 setTimeout(async () => {
-    let codeBot = await conn.requestPairingCode(addNumber);
-    codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot;
-    console.log(
-        chalk.bold.white(chalk.bgMagenta(mid.pairingCode)),
-        chalk.bold.white(chalk.white(codeBot))
-    );
-}, 2000);
+let codeBot = await conn.requestPairingCode(addNumber)
+codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot
+console.log(chalk.bold.white(chalk.bgMagenta(mid.pairingCode)), chalk.bold.white(chalk.white(codeBot)))
+}, 2000)
+}}}
+}
 
-conn.isInit = false;
-conn.well = false;
+conn.isInit = false
+conn.well = false
 
 if (!opts['test']) {
-    if (global.db) {
-        setInterval(async () => {
-            if (global.db.data) await global.db.save();
-            if (opts['autocleartmp'] && (global.support || {}).find) {
-                const tmp = [os.tmpdir(), 'tmp', "GataJadiBot"];
-                tmp.forEach(filename =>
-                    cp.spawn('find', [filename, '-amin', '2', '-type', 'f', '-delete'])
-                );
-            }
-        }, 30 * 1000);
-    }
-}
+if (global.db) setInterval(async () => {
+if (global.db.data) await global.db.save();
+if (opts['autocleartmp'] && (global.support || {}).find) (tmp = [os.tmpdir(), 'tmp', "GataJadiBot"], tmp.forEach(filename => cp.spawn('find', [filename, '-amin', '2', '-type', 'f', '-delete'])))}, 30 * 1000)}
 
-if (opts['server']) {
-    (await import('./server.js')).default(global.conn, PORT);
-}
+if (opts['server']) (await import('./server.js')).default(global.conn, PORT)
 
-// respaldo de la sesión "GataBotSession"
+//respaldo de la sesión "GataBotSession"
 const backupCreds = async () => {
-    if (!fs.existsSync(credsFile)) {
-        console.log(await tr('[⚠] No se encontró el archivo creds.json para respaldar.'));
-        return;
-    }
+if (!fs.existsSync(credsFile)) {
+console.log(await tr('[⚠] No se encontró el archivo creds.json para respaldar.'));
+return;
+}
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const newBackup = join(respaldoDir, `creds-${timestamp}.json`);
-    fs.copyFileSync(credsFile, newBackup);
-    console.log(`[✅] Respaldo creado: ${newBackup}`);
+const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+const newBackup = join(respaldoDir, `creds-${timestamp}.json`);
+fs.copyFileSync(credsFile, newBackup);
+console.log(`[✅] Respaldo creado: ${newBackup}`);
 
-    const backups = fs.readdirSync(respaldoDir)
-        .filter(file => file.startsWith('creds-') && file.endsWith('.json'))
-        .sort((a, b) =>
-            fs.statSync(join(respaldoDir, a)).mtimeMs -
-            fs.statSync(join(respaldoDir, b)).mtimeMs
-        );
+const backups = fs.readdirSync(respaldoDir).filter(file => file.startsWith('creds-') && file.endsWith('.json')).sort((a, b) => fs.statSync(join(respaldoDir, a)).mtimeMs - fs.statSync(join(respaldoDir, b)).mtimeMs);
 
-    while (backups.length > 3) {
-        const oldest = backups.shift();
-        fs.unlinkSync(join(respaldoDir, oldest));
-        console.log(`[🗑️] Respaldo antiguo eliminado: ${oldest}`);
-    
-
+while (backups.length > 3) {
+const oldest = backups.shift();
+fs.unlinkSync(join(respaldoDir, oldest));
+console.log(`[🗑️] Respaldo antiguo eliminado: ${oldest}`);
 }}; 
-}};
 
 const restoreCreds = async () => {
 const backups = fs.readdirSync(respaldoDir).filter(file => file.startsWith('creds-') && file.endsWith('.json')).sort((a, b) => fs.statSync(join(respaldoDir, b)).mtimeMs - fs.statSync(join(respaldoDir, a)).mtimeMs);
